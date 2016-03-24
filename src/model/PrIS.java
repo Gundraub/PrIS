@@ -52,7 +52,7 @@ public class PrIS {
 		deVakken.add(new Vak("TICT-V1GP-15", "Group Project"));
 		deVakken.add(new Vak("TICT-V1OODC-15", "Object Oriented Design & Construction"));
 
-		/*
+		/* Aangeleverde code die nu niet relevant is
 		Docent d1 = new Docent("Wim", "geheim");
 		Docent d2 = new Docent("Hans", "geheim");
 		Docent d3 = new Docent("Jan", "geheim");
