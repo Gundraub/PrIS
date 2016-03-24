@@ -22,7 +22,9 @@ public class Docent {
 	}
 	
 	public void voegVakToe(Vak nwV) {
-		mijnVakken.add(nwV);
+		if(mijnVakken.contains(nwV)) {
+			mijnVakken.add(nwV);
+		}
 	}
 	
 	public ArrayList<Vak> getVakken() {

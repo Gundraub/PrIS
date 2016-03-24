@@ -16,4 +16,13 @@ public class Vak {
 	public String getVakCode() {
 		return vakCode;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		boolean result = obj instanceof Vak;
+
+		result = result && (((Vak)obj).getVakCode().equals(vakCode));
+
+		return result;
+	}
 }
