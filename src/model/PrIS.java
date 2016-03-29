@@ -52,42 +52,63 @@ public class PrIS {
 		deVakken.add(new Vak("TICT-V1GP-15", "Group Project"));
 		deVakken.add(new Vak("TICT-V1OODC-15", "Object Oriented Design & Construction"));
 
-		/* Aangeleverde code die nu niet relevant is
-		Docent d1 = new Docent("Wim", "geheim");
-		Docent d2 = new Docent("Hans", "geheim");
-		Docent d3 = new Docent("Jan", "geheim");
-		
-		d1.voegVakToe(new Vak("TCIF-V1AUI-15", "Analyse en User Interfaces"));
-		d1.voegVakToe(new Vak("TICT-V1GP-15", "Group Project"));
-		d1.voegVakToe(new Vak("TICT-V1OODC-15", "Object Oriented Design & Construction"));
-		
-		deDocenten.add(d1);
-		deDocenten.add(d2);
-		deDocenten.add(d3);
+		init();
 
-		Student s1 = new Student("Roel", "geheim");
-		Student s2 = new Student("Frans", "geheim");
-		Student s3 = new Student("Daphne", "geheim");
-		Student s4 = new Student("Jeroen", "geheim");
-		
-		Klas k1 = new Klas("SIE-V1X");
-		
-		s1.setMijnKlas(k1);
-		s2.setMijnKlas(k1);
-		s3.setMijnKlas(k1);
-		s4.setMijnKlas(k1);
-		
-		deStudenten.add(s1);
-		deStudenten.add(s2);
-		deStudenten.add(s3);
-		deStudenten.add(s4);
-		*/
+		// Print de inhoud van de lijsten uit om te checken of er daadwerkelijk geen duplicaten worden aangemaakt
+		System.out.println("- Dit is de inhoud van de studentenlijst -");
+		for(Student deStudent : deStudenten) {
+			System.out.println(deStudent);
+		}
 
-		// Code voor inlezen rooster
+		System.out.println("\n- Dit is de inhoud van de klassenlijst -");
+		for(Klas deKlas : deKlassen) {
+			System.out.println(deKlas.getKlasCode());
+		}
+	}
+
+	public void init() {
+		//
 		BufferedReader fileReader = null;
+		String currentLine = "";
 
+		// Code voor inlezen klassen.csv
 		try {
-			String currentLine = "";
+			// Creëer de file reader
+			fileReader = new BufferedReader(new FileReader("data/klassen.csv"));
+
+			// Lees het bestand regel voor regel
+			while((currentLine = fileReader.readLine()) != null) {
+				// Haal alle tokens uit deze regel
+				String[] tokens = currentLine.split(",");
+
+				// Check of de klas al in deKlassen lijst staat
+				Klas deKlas = new Klas(tokens[4]);
+				if(deKlassen.contains(deKlas)) {
+					deKlas = deKlassen.get(deKlassen.indexOf(deKlas));
+				}
+				// Zo niet, voeg deze klas dan aan de lijst toe
+				else {
+					deKlassen.add(deKlas);
+				}
+
+				// Check of de student al in deStudenten lijst staat, zo niet, voeg deze dan toe
+				Student deStudent = new Student(tokens[0], "geheim");
+				deStudent.setStudentNummer(tokens[0]);
+				deStudent.setMijnKlas(deKlas);
+				deStudent.setVoornaam(tokens[3]);
+				deStudent.setTussenvoegsel(tokens[2]);
+				deStudent.setAchternaam(tokens[1]);
+				if(!deStudenten.contains(deStudent)) {
+					deStudenten.add(deStudent);
+				}
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+
+		// Code voor inlezen rooster_C.csv
+		try {
 			// Creëer de file reader
 			fileReader = new BufferedReader(new FileReader("data/rooster_C.csv"));
 
@@ -101,7 +122,7 @@ public class PrIS {
 				if(deVakken.contains(hetVak)) {
 					hetVak = deVakken.get(deVakken.indexOf(hetVak));
 				}
-				// Zo niet, maak dit vak dan aan en voeg hem aan de lijst toe
+				// Zo niet, voeg dit vak dan aan de lijst toe
 				else {
 					deVakken.add(hetVak);
 				}
@@ -129,16 +150,12 @@ public class PrIS {
 				Les deLes = new Les(tokens[0], tokens[1], tokens[2], hetVak, deDocent, tokens[5], deKlas);
 				deLessen.add(deLes);
 			}
-
-			// Print de klassen uit om te checken of het gewerkt heeft
-			for(Les deLes : deLessen) {
-				System.out.println(deLes + "\n");
-			}
-
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		// Sluit de fileReader
 		finally {
 			try {
 				fileReader.close();
@@ -148,7 +165,6 @@ public class PrIS {
 			}
 		}
 	}
-	
 	
 	public String login(String gebruikersnaam, String wachtwoord) {
 		for (Docent d : deDocenten) {
