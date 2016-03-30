@@ -64,6 +64,11 @@ public class PrIS {
 		for(Klas deKlas : deKlassen) {
 			System.out.println(deKlas.getKlasCode());
 		}
+
+		System.out.println("\n- Dit is de inhoud van de lessenlijst -");
+		for(Les deLes : deLessen) {
+			System.out.println(deLes.toString() + "\n");
+		}
 	}
 
 	public void init() {
@@ -138,7 +143,7 @@ public class PrIS {
 				deDocent.voegVakToe(hetVak);
 
 				// Same voor de Klas
-				Klas deKlas = new Klas(tokens[6]);
+				Klas deKlas = new Klas(tokens[6].replace('_', '-'));
 				if(deKlassen.contains(deKlas)) {
 					deKlas = deKlassen.get(deKlassen.indexOf(deKlas));
 				}
