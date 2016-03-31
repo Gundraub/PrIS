@@ -99,6 +99,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <span>Toon medestudenten</span>
           </a>
 
+          <a data-route="toonrooster" href="{{baseUrl}}rooster" hidden="{{!rolstudent}}">
+            <iron-icon icon="social:group"></iron-icon>
+            <span>Toon rooster</span>
+          </a>
+
         </paper-menu>
       </paper-scroll-header-panel>
 
@@ -156,6 +161,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <section data-route="toonmedestudenten">
               <paper-material elevation="1">
                 <my-medestudenten rol="[[rol]]" username="[[username]]"></my-medestudenten>
+              </paper-material>
+            </section>
+
+            <section data-route="toonrooster">
+              <paper-material elevation="1">
+                <my-rooster rol="[[rol]]" username="[[username]]"></my-rooster>
               </paper-material>
             </section>
 
