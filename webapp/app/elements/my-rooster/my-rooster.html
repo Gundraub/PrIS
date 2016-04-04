@@ -1,3 +1,4 @@
+
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/paper-styles/typography.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
@@ -11,6 +12,7 @@
       :host {
         display: block;
       }
+
       span {
         @apply(--paper-font-body1);
       }
@@ -28,20 +30,26 @@
       .dagcontainer {
         background-color: green;
         margin: 5px;
-        width: 296px;
+        width: 330px;
       }
+      paper-button.fancy {
+        color: red;
+}
+
     </style>
 
     <h1 class="page-title">Rooster van {{username}} </h1>
-
       <div class="dagcontainer">
         <div class="date">
-            <paper-button onclick="offset1Down"> < </paper-button>
-          {{responseObject.datum}}
-            <paper-button onclick="offset1Up"> > </paper-button>
+            <paper-button on-tap="fetchsetDate" data-args="-7" > << </paper-button>
+            <paper-button on-tap="fetchsetDate" data-args="-1" > < </paper-button>
+              {{date}}
+            <paper-button on-tap="fetchsetDate" data-args="1" > > </paper-button>
+            <paper-button on-tap="fetchsetDate" data-args="7" > >> </paper-button>
+
           <br/>
         </div>
-                <template is="dom-repeat" items="{{responseObject.lessen}}">
+                <template id= "rooster" is = "dom-repeat" items = "{{lessen}}">
                   <div class="lescontainer">
                       <div class="tijd">
                         Tijd: {{item.tijd}}
@@ -55,6 +63,9 @@
                       <div class="lokaal">
                         Lokaal: {{item.lokaal}}
                       </div>
+                      <div class="afmeldknop">
+                        <paper-button on-tap="handleTap"> Afmelden </paper-button>
+                      </div>
                   </div>
                 </template>
       </div>
@@ -67,6 +78,21 @@
   		on-response="responseHandlerRooster">
     </iron-ajax>
 
+    <iron-ajax
+      id="ajaxWijzig"
+      method="POST"
+      url="/student/wijzigrooster"
+      handle-as="json"
+      on-response="responseHandlerWijzig">
+    </iron-ajax>
+
+    <iron-ajax
+      id="ajaxAfmelden"
+      method="POST"
+      url="/student/wijzigrooster"
+      handle-as="json"
+      on-response="responseHandlerWijzig">
+    </iron-ajax>
 
   </template>
   <script>
@@ -74,37 +100,61 @@
         is: 'my-rooster',
         properties: {
           username: String,
-          offset: 0,
+          offset: Number,
           date: String,
-          rol: {
-            observer: 'fetchRooster',
-          }
+          lessen: Array
         },
-        offset1Up: function() {
-          this.offset = 1,
-          this.date = this.responseObject,
-          this.$.ajaxRooster.contentType="application/json";
-          this.$.ajaxRooster.body = {"username":this.username ,"date":this.date, "offset":this.offset};
-          this.$.ajaxRooster.generateRequest();
+
+        observers: [
+          'fetchsetUp(rooster)',
+          'fetchsetDown(rooster)',
+          'fetchRooster(rol)'
+        ],
+        afmelden: function(e) {
+            var r = confirm("Weet je zeker dat je je wilt afmelden?");
+            alert(e.target.getAttribute('data-args'));
+            if (r==true){
+
+            }
         },
-        offset1down: function() {
-          this.offset = -1;
-          this.date = responseObject;
-          this.$.ajaxRooster.contentType="application/json";
-          this.$.ajaxRooster.body = {"username":this.username ,"date":this.date, "offset":this.offset};
-          this.$.ajaxRooster.generateRequest();
-        },
+
         responseHandlerRooster: function(request) {
           console.log(request.detail.response);
           this.responseObject = request.detail.response;
+          this.date = this.responseObject.datum;
+          this.lessen = this.responseObject.lessen;
         },
+
+        responseHandlerWijzig: function(request) {
+          console.log(request.detail.response);
+        },
+
         fetchRooster: function(){
           if (this.rol == "student") {
             this.$.ajaxRooster.contentType="application/json";
-            this.$.ajaxRooster.body = {"username":this.username ,"date":this.date, "offset":this.offset};
+            this.$.ajaxRooster.body = {"username":this.username};
             this.$.ajaxRooster.generateRequest();
           }
+        },
+        fetchsetDate: function(e) {
+                  if(this.rol == "student") {
+                    this.$.ajaxWijzig.contentType="application/json";
+                    this.offset = e.target.getAttribute('data-args');
+                    this.$.ajaxWijzig.body = {"offset": this.offset, "username":this.username};
+                    this.$.ajaxWijzig.generateRequest();
+                    this.$.ajaxRooster.contentType="application/json";
+                    this.$.ajaxRooster.body = {"username":this.username};
+                    this.$.ajaxRooster.generateRequest();
+                  }
+                },
+        handleTap: function(e) {
+            var model = e.model.item;
+                var r = confirm("Weet je zeker dat je je wilt afmelden?");
+                if (r==true){
+                  
+                }
         }
+
       });
   </script>
 </dom-module>
