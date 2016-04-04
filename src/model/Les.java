@@ -9,8 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Les {
-    SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-ddHH:mm");
-
     Date beginTijd;
     Date eindTijd;
 
@@ -20,6 +18,8 @@ public class Les {
     private Klas deKlas;
 
     public Les(String dat, String bT, String eT, Vak v, Docent d, String l, Klas k) throws ParseException {
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-ddHH:mm");
+
         beginTijd = inputFormat.parse(dat + bT);
         eindTijd = inputFormat.parse(dat + eT);
         hetVak = v;

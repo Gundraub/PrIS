@@ -1,9 +1,12 @@
 package model;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 public class PrIS {
 	private ArrayList<Docent> deDocenten;
@@ -13,6 +16,8 @@ public class PrIS {
 	private ArrayList<Les> deLessen;
 
 	private ArrayList<Vak> deVakken;
+
+	private ArrayList<Presentie> dePresenties;
 
 
 	//TODO: Deze commentaar voorzien van actueel commentaar...
@@ -52,26 +57,17 @@ public class PrIS {
 		deVakken.add(new Vak("TICT-V1GP-15", "Group Project"));
 		deVakken.add(new Vak("TICT-V1OODC-15", "Object Oriented Design & Construction"));
 
+		dePresenties = new ArrayList<Presentie>();
+
 		init();
 
-		// Print de inhoud van de lijsten uit om te checken of er daadwerkelijk geen duplicaten worden aangemaakt
-		System.out.println("- Dit is de inhoud van de studentenlijst -");
-		for(Student deStudent : deStudenten) {
-			System.out.println(deStudent);
-		}
-
-		System.out.println("\n- Dit is de inhoud van de klassenlijst -");
-		for(Klas deKlas : deKlassen) {
-			System.out.println(deKlas.getKlasCode());
-		}
-
-		System.out.println("\n- Dit is de inhoud van de lessenlijst -");
-		for(Les deLes : deLessen) {
-			System.out.println(deLes.toString() + "\n");
-		}
+		debug();
 	}
 
-	public void init() {
+	/**
+	 * De initialisatie methode leest de .csv bestanden uit en maakt aan de hand van diens inhoud de nodige objecten aan.
+	 */
+	private void init() {
 		//
 		BufferedReader fileReader = null;
 		String currentLine = "";
@@ -154,6 +150,12 @@ public class PrIS {
 				// Creëer de Les en voeg deze aan de lijst toe
 				Les deLes = new Les(tokens[0], tokens[1], tokens[2], hetVak, deDocent, tokens[5], deKlas);
 				deLessen.add(deLes);
+
+				// Creëer Presentie objecten voor deze les
+				for (Student deStudent : getStudentenVanKlas(deKlas.getKlasCode())) {
+					Presentie dePresentie = new Presentie(deStudent, deLes);
+					dePresenties.add(dePresentie);
+				}
 			}
 		}
 		catch (Exception e) {
@@ -170,7 +172,39 @@ public class PrIS {
 			}
 		}
 	}
-	
+
+	/**
+	 * Een set for-loops puur bedoelt om te kunnen debuggen.
+	 */
+	private void debug() {
+		System.out.println("- Dit is de inhoud van de studentenlijst -");
+		for (Student deStudent : deStudenten) {
+			System.out.println(deStudent);
+		}
+
+		System.out.println("\n- Dit is de inhoud van de klassenlijst -");
+		for (Klas deKlas : deKlassen) {
+			System.out.println(deKlas.getKlasCode());
+		}
+
+		System.out.println("\n- Dit is de inhoud van de lessenlijst -");
+		for (Les deLes : deLessen) {
+			System.out.println(deLes.toString() + "\n");
+		}
+
+		System.out.println("\n- Dit zijn de lessen van Brian van Yperen op 2016-03-10 -");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Date d = new Date();
+		try {
+			d = dateFormat.parse("2016-03-10");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		for (Les deLes : getDeLessenVanStudent(d, "1679084")) {
+			System.out.println(deLes.toString() + "\n");
+		}
+	}
+
 	public String login(String gebruikersnaam, String wachtwoord) {
 		for (Docent d : deDocenten) {
 			if (d.getGebruikersNaam().equals(gebruikersnaam)) {
@@ -227,5 +261,27 @@ public class PrIS {
 		}
 		
 		return resultaat;
+	}
+
+	public ArrayList<Les> getDeLessenVanStudent(Date d, String nm) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+		ArrayList<Les> result = new ArrayList<Les>();
+
+		// Zoek de klas waarin de Student zich bevindt
+		Klas k = getStudent(nm).getMijnKlas();
+
+		// Vind alle lessen die beginnen op de meegegeven datum en gegeven worden aan de gevonden klas, en voeg deze toe aan de result lijst
+		for (Les l : deLessen) {
+			boolean drone = dateFormat.format(d).equals(dateFormat.format(l.getBeginTijd()));
+			drone = drone && l.getDeKlas().equals(k);
+
+			// If this is the drone we're looking for: add it to the list
+			if (drone) {
+				result.add(l);
+			}
+		}
+
+		return result;
 	}
 }
