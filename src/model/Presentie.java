@@ -10,7 +10,7 @@ public class Presentie {
     private Les deLes;
 
     public enum Present {
-        AANWEZIG, AFWEZIG, ZIEK, ONBEKEND, LEEG
+        AANWEZIG, AFWEZIG, ZIEK, ONBEKEND
     }
 
     private Present status;
@@ -18,6 +18,7 @@ public class Presentie {
     public Presentie(Student s, Les l ) {
         deStudent = s;
         deLes = l;
+        status = null;
     }
 
     public Student getDeStudent() {
