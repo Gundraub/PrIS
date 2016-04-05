@@ -61,7 +61,7 @@ public class PrIS {
 
 		init();
 
-		//debug();
+		debug();
 	}
 
 	/**
@@ -177,6 +177,9 @@ public class PrIS {
 	 * Een set for-loops puur bedoelt om te kunnen debuggen.
 	 */
 	private void debug() {
+		System.out.println("[DEBUG START]\n");
+
+		/*
 		System.out.println("- Dit is de inhoud van de studentenlijst -");
 		for (Student deStudent : deStudenten) {
 			System.out.println(deStudent);
@@ -208,6 +211,43 @@ public class PrIS {
 		for (Vak hetVak : getDocent("Peter van Rooijen").getVakken()) {
 			System.out.println(hetVak.getVakNaam());
 		}
+		*/
+
+		Student ali = getStudent("1610594");
+		Klas v1a = ali.getMijnKlas();
+
+		System.out.println("- Dit zijn alle lessen van klas " + v1a.getKlasCode() + " -");
+		for (Les l : getDeLessenVanKlas(v1a)) {
+			System.out.println("\n" + l.toString());
+		}
+
+		System.out.println("\n- -");
+
+		int[] presentielijst = getStatistiek(ali.getGebruikersNaam(), "TICT-V1OODC-15");
+
+		String result = "\n" + ali.getVoornaam() + "'s presentielijst voor het vak TICT-V1OODC-15 vóór het ziekmelden:\n";
+
+		for (int i : presentielijst) {
+			result += i + " ";
+		}
+
+		System.out.println(result);
+
+		meldZiek(ali.getGebruikersNaam(), "09:30", "2016-03-08");
+		meldZiek(ali.getGebruikersNaam(), "10:00", "2016-03-10");
+
+		presentielijst = getStatistiek(ali.getGebruikersNaam(), "TICT-V1OODC-15");
+
+		result = "\n" + ali.getVoornaam() + "'s presentielijst voor het vak TICT-V1OODC-15 na het ziekmelden:\n";
+
+		for (int i : presentielijst) {
+			result += i + " ";
+		}
+
+		System.out.println(result);
+
+		System.out.println("\n[DEBUG END]\n");
+
 	}
 
 	/**
@@ -309,12 +349,27 @@ public class PrIS {
 		Klas k = getStudent(nm).getMijnKlas();
 
 		// Vind alle lessen die beginnen op de meegegeven datum en gegeven worden aan de gevonden klas, en voeg deze toe aan de result lijst
-		for (Les l : deLessen) {
-			boolean drone = dateFormat.format(d).equals(dateFormat.format(l.getBeginTijd()));
-			drone = drone && l.getDeKlas().equals(k);
+		for (Les l : getDeLessenVanKlas(k)) {
+			// Als deze les op de aangegeven dag wordt gehouden: voeg hem dan toe aan de return lijst
+			if (dateFormat.format(d).equals(dateFormat.format(l.getBeginTijd()))) {
+				result.add(l);
+			}
+		}
 
-			// If this is the drone we're looking for: add it to the list
-			if (drone) {
+		return result;
+	}
+
+	/**
+	 *
+	 *
+	 * @param k
+	 * @return
+     */
+	public ArrayList<Les> getDeLessenVanKlas(Klas k) {
+		ArrayList<Les> result = new ArrayList<Les>();
+
+		for (Les l : deLessen) {
+			if (l.getDeKlas().equals(k)) {
 				result.add(l);
 			}
 		}
@@ -364,7 +419,7 @@ public class PrIS {
 
 		Presentie dePresentie = new Presentie(s, l);
 
-		if (dePresenties.contains(l)) {
+		if (dePresenties.contains(dePresentie)) {
 			result = dePresenties.get(dePresenties.indexOf(dePresentie));
 		}
 
@@ -382,6 +437,54 @@ public class PrIS {
 		Presentie p = getPresentie(nm, bT, dat);
 
 		p.setStatus(Presentie.Present.ZIEK);
+	}
+
+	/**
+	 * Returnt de presenties van een Student voor een bepaald Vak als een int array
+	 *
+	 * @param naam
+	 * @param vakCode
+     * @return
+     */
+	public int[] getStatistiek(String naam, String vakCode) {
+		int[] result = new int[5];
+
+		Student s = getStudent(naam);
+		Vak v = null;
+
+		for (Vak i : deVakken) {
+			if (i.getVakCode().equals(vakCode)) {
+				v = i;
+				break;
+			}
+		}
+
+		for (Les l : getDeLessenVanKlas(s.getMijnKlas())) {
+			for (Presentie p : dePresenties) {
+				if (p.getDeLes().equals(l) && p.getDeStudent().equals(s)) {
+					switch (p.getStatus()) {
+						case AANWEZIG:
+							result[0]++;
+							break;
+						case AFWEZIG:
+							result[1]++;
+							break;
+						case ZIEK:
+							result[2]++;
+							break;
+						case ONBEKEND:
+							result[3]++;
+							break;
+						case LEEG:
+							result[4]++;
+							break;
+					}
+					break;
+				}
+			}
+		}
+
+		return result;
 	}
 
 
