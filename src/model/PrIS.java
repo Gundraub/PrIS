@@ -210,6 +210,13 @@ public class PrIS {
 		}
 	}
 
+	/**
+	 * Returns of er een Docent of Student object is met de meegegeven gebruikersnaam en wachtwoord
+	 *
+	 * @param gebruikersnaam
+	 * @param wachtwoord
+     * @return
+     */
 	public String login(String gebruikersnaam, String wachtwoord) {
 		for (Docent d : deDocenten) {
 			if (d.getGebruikersNaam().equals(gebruikersnaam)) {
@@ -229,7 +236,13 @@ public class PrIS {
 		
 		return "undefined";
 	}
-	
+
+	/**
+	 * Zoekt en returns de Docent met de meegegeven gebruikersnaam
+	 *
+	 * @param gebruikersnaam
+	 * @return
+	 */
 	public Docent getDocent(String gebruikersnaam) {
 		Docent resultaat = null;
 		
@@ -242,7 +255,13 @@ public class PrIS {
 		
 		return resultaat;
 	}
-	
+
+	/**
+	 * Zoekt en returns de Student met de meegegeven gebruikersnaam
+	 *
+	 * @param gebruikersnaam
+	 * @return
+     */
 	public Student getStudent(String gebruikersnaam) {
 		Student resultaat = null;
 		
@@ -255,7 +274,13 @@ public class PrIS {
 		
 		return resultaat;
 	}
-	
+
+	/**
+	 * Zoekt en returns een lijst met alle Studenten in de Klas met de meegegeven klasCode
+	 *
+	 * @param klasCode
+	 * @return
+     */
 	public ArrayList<Student> getStudentenVanKlas(String klasCode) {
 		ArrayList<Student> resultaat = new ArrayList<Student>();
 		
@@ -268,6 +293,13 @@ public class PrIS {
 		return resultaat;
 	}
 
+	/**
+	 * Zoekt en returns een lijst van alle Lessen die Student nm op Date d heeft
+	 *
+	 * @param d
+	 * @param nm
+     * @return
+     */
 	public ArrayList<Les> getDeLessenVanStudent(Date d, String nm) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -289,4 +321,68 @@ public class PrIS {
 
 		return result;
 	}
+
+	/**
+	 * Zoekt en returns de Les die op Date tijd aan Klas k gegeven wordt
+	 *
+	 * @param k
+	 * @param tijd
+     * @return
+     */
+	public Les getLes(Klas k, String tijd) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-ddHH:mm");
+
+		Les result = null;
+
+		for (Les l : deLessen) {
+			try {
+				if (l.getBeginTijd().equals(dateFormat.parse(tijd)) && l.getDeKlas().equals(k)) {
+                    result = l;
+                    break;
+                }
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Zoekt en returns het Presentie object voor de Student met gebruikersnaam nm en de les die als begintijd dat+bT heeft
+	 *
+	 * @param nm
+	 * @param bT
+	 * @param dat
+     * @return
+     */
+	public Presentie getPresentie(String nm, String bT, String dat) {
+		Presentie result = null;
+
+		Student s = getStudent(nm);
+		Les l = getLes(getStudent(nm).getMijnKlas(), dat+bT);
+
+		Presentie dePresentie = new Presentie(s, l);
+
+		if (dePresenties.contains(l)) {
+			result = dePresenties.get(dePresenties.indexOf(dePresentie));
+		}
+
+		return result;
+	}
+
+	/**
+	 * Zoekt de Les die om dat+bT aan de Klas van de Student met gebruikersnaam nm en meldt deze daarvoor ziek.
+	 *
+	 * @param nm
+	 * @param bT
+	 * @param dat
+     */
+	public void meldZiek(String nm, String bT, String dat) {
+		Presentie p = getPresentie(nm, bT, dat);
+
+		p.setStatus(Presentie.Present.ZIEK);
+	}
+
+
 }
