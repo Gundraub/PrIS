@@ -334,6 +334,24 @@ public class PrIS {
 	}
 
 	/**
+	 *
+	 *
+	 * @param k
+	 * @return
+	 */
+	public ArrayList<Les> getDeLessenVanKlas(Klas k) {
+		ArrayList<Les> result = new ArrayList<Les>();
+
+		for (Les l : deLessen) {
+			if (l.getDeKlas().equals(k)) {
+				result.add(l);
+			}
+		}
+
+		return result;
+	}
+
+	/**
 	 * Zoekt en returns een lijst van alle Lessen die Student nm op Date d heeft
 	 *
 	 * @param d
@@ -352,24 +370,6 @@ public class PrIS {
 		for (Les l : getDeLessenVanKlas(k)) {
 			// Als deze les op de aangegeven dag wordt gehouden: voeg hem dan toe aan de return lijst
 			if (dateFormat.format(d).equals(dateFormat.format(l.getBeginTijd()))) {
-				result.add(l);
-			}
-		}
-
-		return result;
-	}
-
-	/**
-	 *
-	 *
-	 * @param k
-	 * @return
-     */
-	public ArrayList<Les> getDeLessenVanKlas(Klas k) {
-		ArrayList<Les> result = new ArrayList<Les>();
-
-		for (Les l : deLessen) {
-			if (l.getDeKlas().equals(k)) {
 				result.add(l);
 			}
 		}

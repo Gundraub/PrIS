@@ -9,8 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Les {
-    Date beginTijd;
-    Date eindTijd;
+    private Date beginTijd;
+    private Date eindTijd;
 
     private Vak hetVak; //?
     private Docent deDocent;
