@@ -1,8 +1,8 @@
 package model;
 
 public class Vak {
-	public String vakCode;
-	public String vakNaam;
+	private String vakCode;
+	private String vakNaam;
 	
 	public Vak(String vC, String vN) {
 		vakCode = vC;

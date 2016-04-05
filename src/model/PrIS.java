@@ -61,7 +61,7 @@ public class PrIS {
 
 		init();
 
-		debug();
+		//debug();
 	}
 
 	/**
@@ -202,6 +202,11 @@ public class PrIS {
 		}
 		for (Les deLes : getDeLessenVanStudent(d, "1679084")) {
 			System.out.println(deLes.toString() + "\n");
+		}
+
+		System.out.println("\n- Dit zijn de vakken die gegeven worden door Peter van Rooijen -");
+		for (Vak hetVak : getDocent("Peter van Rooijen").getVakken()) {
+			System.out.println(hetVak.getVakNaam());
 		}
 	}
 

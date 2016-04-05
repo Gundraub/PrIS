@@ -22,7 +22,7 @@ public class Docent {
 	}
 	
 	public void voegVakToe(Vak nwV) {
-		if(mijnVakken.contains(nwV)) {
+		if(!mijnVakken.contains(nwV)) {
 			mijnVakken.add(nwV);
 		}
 	}

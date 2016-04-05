@@ -80,34 +80,26 @@ public class StudentController implements Handler {
 		
 		Student student = informatieSysteem.getStudent(gebruikersnaam);
 		String klascode = student.getMijnKlas().getKlasCode();
-		 JsonBuilderFactory factory = Json.createBuilderFactory(null);
-		 JsonArrayBuilder lessen = Json.createArrayBuilder();
-	//maakt lijst lessen, met alle lessen die voldoen aan datum en studentennummer.
-		 for (Les l:informatieSysteem.getDeLessen()) {
-			 if(klascode.equals(l.getDeKlas().getKlasCode())==true){
-				 if(dateFormat.format(l.getBeginTijd()).equals(dateFormat.format(date)) == true){
-					 lessen.add(factory.createObjectBuilder()
-					 	.add("tijd", timeFormat.format(l.getBeginTijd()))
-					 	.add("vak",  l.getHetVak().vakNaam)
-					 	.add("docent", l.getDeDocent().getGebruikersNaam())
-					 	.add("lokaal", l.getHetLokaal()));}
+		JsonBuilderFactory factory = Json.createBuilderFactory(null);
+		JsonArrayBuilder lessen = Json.createArrayBuilder();
+		//maakt lijst lessen, met alle lessen die voldoen aan datum en studentennummer.
+		for (Les l : informatieSysteem.getDeLessenVanStudent(date, gebruikersnaam)) {
+			lessen.add(factory.createObjectBuilder()
+					.add("tijd", timeFormat.format(l.getBeginTijd()))
+					.add("vak",  l.getHetVak().getVakNaam())
+					.add("docent", l.getDeDocent().getGebruikersNaam())
+					.add("lokaal", l.getHetLokaal()));
+		}
 
-				 else{continue;}
-				 
-				 }
-			 
-			 else{continue;}
-			 
-		 }
 		 
 	//Maakt lijst met twee lijsten, lijst lessen en lijst datum.
 	//Lijst datum geeft de huidige ingestelde datum naar polymer
 	//Lijst lessen geeft variabele tijd, vak, docent, lokaal
 	//Beide lijsten komen samen in object "job"
 	//job wordt in geheel opgestuurd naar polymer rooster element
-		 JsonObject job = factory.createObjectBuilder()
-				 .add("datum", dateFormat.format(date))
-				 .add("lessen", lessen)
+		JsonObject job = factory.createObjectBuilder()
+				.add("datum", dateFormat.format(date))
+				.add("lessen", lessen)
  				.build();
 		System.out.println(job.toString());
 		conversation.sendJSONMessage(job.toString());
@@ -136,28 +128,23 @@ public class StudentController implements Handler {
 		mmS += mS;
 	//loop in
 		Date date = new Date(mmS);
-			 for (Les l:informatieSysteem.getDeLessen()) {
-				 if(klascode.equals(l.getDeKlas().getKlasCode())==true){
-					 if(dateFormat.format(l.getBeginTijd()).equals(dateFormat.format(date)) == true){
-						 lessen.add(factory.createObjectBuilder()
-						 	.add("tijd", timeFormat.format(l.getBeginTijd()))
-						 	.add("vak",  l.getHetVak().vakNaam)
-						 	.add("docent", l.getDeDocent().getGebruikersNaam())
-						 	.add("lokaal", l.getHetLokaal()));}
-					 else{continue;}
-					 }
-				 else{continue;}
-			 }
-	//loop stop
-			 JsonObject job = factory.createObjectBuilder()
-					 .add("datum", dateFormat.format(date))
-					 .add("lessen", lessen)
-	 				.build();
-			conversation.sendJSONMessage(job.toString());
-			System.out.println(job.toString());
-			System.out.println(conversation);
-		
+		for (Les l : informatieSysteem.getDeLessenVanStudent(date, gebruikersnaam)) {
+			lessen.add(factory.createObjectBuilder()
+					.add("tijd", timeFormat.format(l.getBeginTijd()))
+					.add("vak", l.getHetVak().getVakNaam())
+					.add("docent", l.getDeDocent().getGebruikersNaam())
+					.add("lokaal", l.getHetLokaal()));
 		}
+	//loop stop
+		JsonObject job = factory.createObjectBuilder()
+				.add("datum", dateFormat.format(date))
+				.add("lessen", lessen)
+				.build();
+		conversation.sendJSONMessage(job.toString());
+		System.out.println(job.toString());
+		System.out.println(conversation);
+		
+	}
 	
 	private void mijnMedestudenten(Conversation conversation) {
 		JsonObject jsonObjectIn = (JsonObject) conversation.getRequestBodyAsJSON();
@@ -174,7 +161,7 @@ public class StudentController implements Handler {
 				continue;
 			else {
 				jab.add(Json.createObjectBuilder()
-						.add("naam", s.getGebruikersNaam()));
+						.add("naam", s.toString()));
 			}
 		}
 		conversation.sendJSONMessage(jab.build().toString());	// terug naar de Polymer-GUI!
