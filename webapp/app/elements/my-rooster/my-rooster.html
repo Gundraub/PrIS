@@ -18,27 +18,29 @@
       }
       .lescontainer{
         margin: 23px;
-        background-color: grey;
-        width: 250px;
+        background-color: white;
+        width: 274px;
       }
       .date {
         margin-top: 10px;
         margin-bottom: 10px;
         font-size: 20px;
-        background-color: blue;
+        font-color: white;
+        background-color: #3f51b5;
       }
       .dagcontainer {
-        background-color: green;
+        background-color: #cdcdcd;
         margin: 5px;
         width: 330px;
+        padding-bottom: 8px;
       }
       paper-button.fancy {
         color: red;
 }
-
     </style>
 
-    <h1 class="page-title">Rooster van {{username}} </h1>
+
+      <h1 class="page-title">Rooster van {{username}} </h1>
       <div class="dagcontainer">
         <div class="date">
             <paper-button on-tap="fetchsetDate" data-args="-7" > << </paper-button>
