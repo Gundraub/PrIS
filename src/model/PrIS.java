@@ -61,7 +61,7 @@ public class PrIS {
 
 		init();
 
-		debug();
+		//debug();
 	}
 
 	/**
