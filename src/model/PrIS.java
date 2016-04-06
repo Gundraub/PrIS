@@ -179,7 +179,7 @@ public class PrIS {
 	private void debug() {
 		System.out.println("[DEBUG START]\n");
 
-		/*
+
 		System.out.println("- Dit is de inhoud van de studentenlijst -");
 		for (Student deStudent : deStudenten) {
 			System.out.println(deStudent);
@@ -190,12 +190,21 @@ public class PrIS {
 			System.out.println(deKlas.getKlasCode());
 		}
 
+		System.out.println("\n- Dit zijn de verschillende klassen met inhoud -");
+		for (Klas deKlas : deKlassen) {
+			System.out.println("\n" + deKlas.getKlasCode());
+			for (Student s : getStudentenVanKlas(deKlas.getKlasCode())) {
+				System.out.println(s);
+			}
+		}
+
+		/*
 		System.out.println("\n- Dit is de inhoud van de lessenlijst -");
 		for (Les deLes : deLessen) {
 			System.out.println(deLes.toString() + "\n");
 		}
-		*/
 
+		/*
 		System.out.println("\n- Dit zijn de lessen van Brian van Yperen op 2016-03-10 -");
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Date d = new Date();
@@ -213,7 +222,6 @@ public class PrIS {
 		for (Vak hetVak : getDocent("Peter van Rooijen").getVakken()) {
 			System.out.println(hetVak.getVakNaam());
 		}
-		*/
 
 		Student ali = getStudent("1691834");
 		Klas v1a = ali.getMijnKlas();
@@ -263,6 +271,7 @@ public class PrIS {
 		for (Les l : getDeLessenVanDocent(day, "Bart van Eijkelenburg")) {
 			System.out.println(l);
 		}
+		*/
 
 		System.out.println("\n[DEBUG END]\n");
 
@@ -396,6 +405,29 @@ public class PrIS {
 	}
 
 	/**
+	 *
+	 *
+	 * @param datum
+	 * @param naam
+	 * @return
+	 */
+	public ArrayList<Les> getDeLessenVanDocent(Date datum, String naam) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+		ArrayList<Les> result = new ArrayList<Les>();
+
+		Docent d = getDocent(naam);
+
+		for (Les l : deLessen) {
+			if (l.getDeDocent().equals(d) && dateFormat.format(datum).equals(dateFormat.format(l.getBeginTijd()))) {
+				result.add(l);
+			}
+		}
+
+		return result;
+	}
+
+	/**
 	 * Zoekt en returns de Les die op Date tijd aan Klas k gegeven wordt
 	 *
 	 * @param k
@@ -500,29 +532,6 @@ public class PrIS {
 					}
 					break;
 				}
-			}
-		}
-
-		return result;
-	}
-
-	/**
-	 *
-	 *
-	 * @param datum
-	 * @param naam
-     * @return
-     */
-	public ArrayList<Les> getDeLessenVanDocent(Date datum, String naam) {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-		ArrayList<Les> result = new ArrayList<Les>();
-
-		Docent d = getDocent(naam);
-
-		for (Les l : deLessen) {
-			if (l.getDeDocent().equals(d) && dateFormat.format(datum).equals(dateFormat.format(l.getBeginTijd()))) {
-				result.add(l);
 			}
 		}
 
