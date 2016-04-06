@@ -37,6 +37,8 @@ public class Application {
 		server.registerHandler("/login", userController);
 		server.registerHandler("/docent/mijnvakken", docentController);
 		server.registerHandler("/student/mijnmedestudenten", studentController);
+		server.registerHandler("/student/wijzigrooster", studentController);
+		server.registerHandler("/student/mijnrooster", studentController);
 		
 		server.start();
 	}
