@@ -213,7 +213,7 @@ public class PrIS {
 		}
 		*/
 
-		Student ali = getStudent("1610594");
+		Student ali = getStudent("1691834");
 		Klas v1a = ali.getMijnKlas();
 
 		System.out.println("- Dit zijn alle lessen van klas " + v1a.getKlasCode() + " -");
@@ -245,6 +245,10 @@ public class PrIS {
 		}
 
 		System.out.println(result);
+
+		Student s = getStudent("1691834");
+
+		System.out.println("\n\n" + s.getVoornaam() + " zit in klas " + s.getMijnKlas().getKlasCode());
 
 		System.out.println("\n[DEBUG END]\n");
 
