@@ -16,12 +16,12 @@
       }
     </style>
 
-    <h1 class="page-title">Overzicht van mijn medestudenten ( {{username}} )</h1>
+    <h1 class="page-title">Overzicht van mijn medestudenten {{username}}</h1>
     <table>
       <tr>
         <th>Naam</th>
       </tr>
-      <template is="dom-repeat" items="{{studenten}}">
+      <template is="dom-repeat" items="{{responseObject.jab}}">
         <tr>
           <td><a href$="{{baseUrl}}users/{{item.naam}}">{{item.naam}}</a></td>
         </tr>
@@ -55,7 +55,7 @@
 
         responseHandler: function(request) {
           console.log(request.detail.response);
-          this.studenten = request.detail.response;
+          this.responseObject = request.detail.response;
         },
 
         fetchStudenten: function() {

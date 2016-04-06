@@ -178,25 +178,32 @@ public class StudentController implements Handler {
 		conversation.sendJSONMessage(value.toString());
 		
 	}
-	
-	private void mijnMedestudenten(Conversation conversation) {
+
+	private void mijnMedestudenten(Conversation conversation)  {
 		JsonObject jsonObjectIn = (JsonObject) conversation.getRequestBodyAsJSON();
 		String gebruikersnaam = jsonObjectIn.getString("username");
 		
 		Student student = informatieSysteem.getStudent(gebruikersnaam);			// Student-object opzoeken
 		String klasCode = student.getMijnKlas().getKlasCode();					// klascode van de student opzoeken
 		ArrayList<Student> studentenVanKlas = informatieSysteem.getStudentenVanKlas(klasCode);	// medestudenten opzoeken
-		
+
 		JsonArrayBuilder jab = Json.createArrayBuilder();						// Uiteindelijk gaat er een array...
 		
-		for (Student s : studentenVanKlas) {									// met daarin voor elke medestudent een JSON-object... 
-			if (s.getGebruikersNaam().equals(gebruikersnaam)) 					// behalve de student zelf...
+		for (Student s : studentenVanKlas) {									// met daarin voor elke medestudent een JSON-object...
+			if (s.getGebruikersNaam().equals(gebruikersnaam))
+				// behalve de student zelf...
 				continue;
 			else {
+
 				jab.add(Json.createObjectBuilder()
-						.add("naam", s.toString()));
+						.add("naam", s.getVoornaam()));
 			}
 		}
-		conversation.sendJSONMessage(jab.build().toString());	// terug naar de Polymer-GUI!
+		JsonBuilderFactory factory = Json.createBuilderFactory(null);
+		JsonObject value = factory.createObjectBuilder()
+				.add("jab",jab)
+				.build();
+
+		conversation.sendJSONMessage(value.toString());	// terug naar de Polymer-GUI!
 	}
 }
