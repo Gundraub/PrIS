@@ -96,6 +96,13 @@
       on-response="responseHandlerAfmelden">
     </iron-ajax>
 
+      <iron-ajax
+      id="ajaxDatum"
+      method="POST"
+      url="/student/datumopvragen"
+      handle-as="json"
+      on-response="responseHandlerDatum">
+      </iron-ajax>
   </template>
   <script>
       Polymer({
@@ -108,9 +115,15 @@
           tijd1: String
         },
 
-          observers: [
+        observers: [
               'fetchRooster(rol)'
           ],
+
+        responseHandlerDatum: function(request) {
+            console.log(request.detail.response);
+
+        },
+
         responseHandlerAfmelden: function(request) {
             console.log(request.detail.response);
             this.$.ajaxRooster.contentType="application/json";
@@ -138,6 +151,10 @@
 
         fetchRooster: function(){
           if (this.rol == "student") {
+            this.$.ajaxDatum.contentType="application/json";
+            this.$.ajaxDatum.body = {"username":this.username};
+            this.$.ajaxDatum.generateRequest();
+
             this.$.ajaxRooster.contentType="application/json";
             this.$.ajaxRooster.body = {"username":this.username};
             this.$.ajaxRooster.generateRequest();

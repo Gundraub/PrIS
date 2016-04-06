@@ -32,7 +32,7 @@ public class StudentController implements Handler {
 	// word veranderd naar huidige datum door 14557.... te vervangen met:
 	//System.currentTimeMillis()
 	String gebruikersnaam;
-	long mmS = 1455753600000L;
+	long mmS;
 	
 	
 	
@@ -65,6 +65,10 @@ public class StudentController implements Handler {
 		else if (conversation.getRequestedURI().startsWith("/student/studentafmelden")) {
 			studentAfmelden(conversation);
 		}
+
+		else if (conversation.getRequestedURI().startsWith("/student/datumopvragen")) {
+			huidigeDatum(conversation);
+		}
 	}
 	
 
@@ -75,6 +79,15 @@ public class StudentController implements Handler {
 	 * 
 	 * @param conversation - alle informatie over het request
 	 */
+	private void huidigeDatum(Conversation conversation)	{
+		mmS = System.currentTimeMillis();
+		JsonBuilderFactory factory = Json.createBuilderFactory(null);
+		JsonObject value = factory.createObjectBuilder()
+				.add("afmeldbericht","afgemeld")
+				.build();
+		conversation.sendJSONMessage(value.toString());
+
+	}
 
 	private void studentAfmelden(Conversation conversation)  {
 		Date date = new Date(mmS);
