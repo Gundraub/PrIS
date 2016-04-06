@@ -194,6 +194,7 @@ public class PrIS {
 		for (Les deLes : deLessen) {
 			System.out.println(deLes.toString() + "\n");
 		}
+		*/
 
 		System.out.println("\n- Dit zijn de lessen van Brian van Yperen op 2016-03-10 -");
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -207,6 +208,7 @@ public class PrIS {
 			System.out.println(deLes.toString() + "\n");
 		}
 
+		/*
 		System.out.println("\n- Dit zijn de vakken die gegeven worden door Peter van Rooijen -");
 		for (Vak hetVak : getDocent("Peter van Rooijen").getVakken()) {
 			System.out.println(hetVak.getVakNaam());
@@ -248,7 +250,19 @@ public class PrIS {
 
 		Student s = getStudent("1691834");
 
-		System.out.println("\n\n" + s.getVoornaam() + " zit in klas " + s.getMijnKlas().getKlasCode());
+		System.out.println("\n" + s.getVoornaam() + " zit in klas " + s.getMijnKlas().getKlasCode());
+
+		Docent bart = getDocent("Bart van Eijkelenburg");
+		Date day = new Date();
+		try {
+			day = dateFormat.parse("2016-03-10");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		System.out.println("\n" + bart.getGebruikersNaam() + " geeft op " + dateFormat.format(day) + " de volgende lessen:");
+		for (Les l : getDeLessenVanDocent(day, "Bart van Eijkelenburg")) {
+			System.out.println(l);
+		}
 
 		System.out.println("\n[DEBUG END]\n");
 
@@ -358,22 +372,22 @@ public class PrIS {
 	/**
 	 * Zoekt en returns een lijst van alle Lessen die Student nm op Date d heeft
 	 *
-	 * @param d
-	 * @param nm
+	 * @param datum
+	 * @param naam
      * @return
      */
-	public ArrayList<Les> getDeLessenVanStudent(Date d, String nm) {
+	public ArrayList<Les> getDeLessenVanStudent(Date datum, String naam) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 		ArrayList<Les> result = new ArrayList<Les>();
 
 		// Zoek de klas waarin de Student zich bevindt
-		Klas k = getStudent(nm).getMijnKlas();
+		Klas k = getStudent(naam).getMijnKlas();
 
 		// Vind alle lessen die beginnen op de meegegeven datum en gegeven worden aan de gevonden klas, en voeg deze toe aan de result lijst
 		for (Les l : getDeLessenVanKlas(k)) {
 			// Als deze les op de aangegeven dag wordt gehouden: voeg hem dan toe aan de return lijst
-			if (dateFormat.format(d).equals(dateFormat.format(l.getBeginTijd()))) {
+			if (dateFormat.format(datum).equals(dateFormat.format(l.getBeginTijd()))) {
 				result.add(l);
 			}
 		}
@@ -491,5 +505,27 @@ public class PrIS {
 		return result;
 	}
 
+	/**
+	 *
+	 *
+	 * @param datum
+	 * @param naam
+     * @return
+     */
+	public ArrayList<Les> getDeLessenVanDocent(Date datum, String naam) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+		ArrayList<Les> result = new ArrayList<Les>();
+
+		Docent d = getDocent(naam);
+
+		for (Les l : deLessen) {
+			if (l.getDeDocent().equals(d) && dateFormat.format(datum).equals(dateFormat.format(l.getBeginTijd()))) {
+				result.add(l);
+			}
+		}
+
+		return result;
+	}
 
 }

@@ -30,4 +30,13 @@ public class Docent {
 	public ArrayList<Vak> getVakken() {
 		return mijnVakken;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		boolean result = obj instanceof Docent;
+
+		result = result && ((Docent)obj).getGebruikersNaam().equals(gebruikersNaam);
+
+		return result;
+	}
 }
