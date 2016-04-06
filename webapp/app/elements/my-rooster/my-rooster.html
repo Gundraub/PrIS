@@ -64,7 +64,7 @@
                         Lokaal: {{item.lokaal}}
                       </div>
                       <div class="afmeldknop">
-                        <paper-button on-tap="handleTap"> Afmelden </paper-button>
+                        <paper-button on-tap="studentAfmelden"> {{item.status}} </paper-button>
                       </div>
                   </div>
                 </template>
@@ -89,9 +89,9 @@
     <iron-ajax
       id="ajaxAfmelden"
       method="POST"
-      url="/student/wijzigrooster"
+      url="/student/studentafmelden"
       handle-as="json"
-      on-response="responseHandlerWijzig">
+      on-response="responseHandlerAfmelden">
     </iron-ajax>
 
   </template>
@@ -102,20 +102,19 @@
           username: String,
           offset: Number,
           date: String,
-          lessen: Array
+          lessen: Array,
+          tijd1: String
         },
 
-        observers: [
-          'fetchsetUp(rooster)',
-          'fetchsetDown(rooster)',
-          'fetchRooster(rol)'
-        ],
-        afmelden: function(e) {
-            var r = confirm("Weet je zeker dat je je wilt afmelden?");
-            alert(e.target.getAttribute('data-args'));
-            if (r==true){
+          observers: [
+              'fetchRooster(rol)'
+          ],
+        responseHandlerAfmelden: function(request) {
+            console.log(request.detail.response);
+            this.$.ajaxRooster.contentType="application/json";
+            this.$.ajaxRooster.body = {"username":this.username};
+            this.$.ajaxRooster.generateRequest();
 
-            }
         },
 
         responseHandlerRooster: function(request) {
@@ -127,6 +126,12 @@
 
         responseHandlerWijzig: function(request) {
           console.log(request.detail.response);
+            this.$.ajaxRooster.contentType="application/json";
+            this.$.ajaxRooster.body = {"username":this.username};
+            this.$.ajaxRooster.generateRequest();
+
+
+
         },
 
         fetchRooster: function(){
@@ -137,23 +142,33 @@
           }
         },
         fetchsetDate: function(e) {
-                  if(this.rol == "student") {
-                    this.$.ajaxWijzig.contentType="application/json";
-                    this.offset = e.target.getAttribute('data-args');
-                    this.$.ajaxWijzig.body = {"offset": this.offset, "username":this.username};
-                    this.$.ajaxWijzig.generateRequest();
-                    this.$.ajaxRooster.contentType="application/json";
-                    this.$.ajaxRooster.body = {"username":this.username};
-                    this.$.ajaxRooster.generateRequest();
+            if(this.rol == "student") {
+                this.$.ajaxWijzig.contentType="application/json";
+                this.offset = e.target.getAttribute('data-args');
+                this.$.ajaxWijzig.body = {"offset": this.offset, "username":this.username};
+                this.$.ajaxWijzig.generateRequest();
+                console.log('loading procedure started');
+                console.log('calculating differences');
+                console.log('initiating space and time');
+                console.log('accounting for relativity');
+                console.log('working out milliseconds');
+                console.log('traveling to another time dimension');
+                console.log('installing calender');
+                console.log('magnificent peace of software worked out your schedule');
+                console.log('accepting complements');
+            }
+        },
+          studentAfmelden: function(e) {
+              if(this.rol == "student") {
+                  var r = confirm("Weet je zeker dat je je wilt afmelden?");
+                  if(r==true) {
+                      this.$.ajaxAfmelden.contentType = "application/json";
+                      this.tijd1 = e.model.item.tijd;
+                      this.$.ajaxAfmelden.body = {"tijd": this.tijd1, "username": this.username};
+                      this.$.ajaxAfmelden.generateRequest();
                   }
-                },
-        handleTap: function(e) {
-            var model = e.model.item;
-                var r = confirm("Weet je zeker dat je je wilt afmelden?");
-                if (r==true){
-                  
-                }
-        }
+              }
+          }
 
       });
   </script>
