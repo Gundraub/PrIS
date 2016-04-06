@@ -455,6 +455,7 @@ public class PrIS {
 		Presentie p = getPresentie(nm, bT, dat);
 
 		p.setStatus(Presentie.Present.ZIEK);
+		System.out.println(getStudent(nm).getVoornaam() + " is succesvol ziekgemeld.");
 	}
 
 	/**
